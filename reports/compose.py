@@ -32,10 +32,16 @@ class ReportResult:
 
 
 def compose_report(accepted: AcceptedSegments) -> ReportResult:
+    """Chain the fixed segments from zero, carrying the actual running amount.
+
+    Each segment is evaluated at the amount the previous segment actually
+    reached, so the running total continues across shift boundaries exactly as
+    it would over the one sealed original-tick sequence.
+    """
     amount = Fraction(0)
     alarms = []
     for segment in accepted.segments:
-        trace = evaluate_response(segment.response, 0)
+        trace = evaluate_response(segment.response, amount)
         alarms.extend(trace.alarms)
         amount = trace.amount
     return ReportResult(accepted.assignment, accepted.coverage, accepted.references, tuple(alarms), amount)

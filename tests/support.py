@@ -88,8 +88,8 @@ class ProjectCase(unittest.TestCase):
         return (record_count(self.archive.path, 'reports'), record_count(self.archive.path, 'receipts'))
 
 
-def independent_recurrence(first, deviations, threshold):
-    amount = Fraction(0)
+def independent_recurrence(first, deviations, threshold, entry=0):
+    amount = Fraction(entry)
     alarms = []
     for number, deviation in enumerate(deviations, first):
         amount += deviation

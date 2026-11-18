@@ -33,3 +33,9 @@ python3 -B demo.py sample/roll.json
 ## 交班件格式
 
 `evidence.codec.encode_segment` 和 `decode_segment` 读写 UTF-8 JSON 固定件。版本为 `1`。`binding` 包含卷、计划、来源录制号及覆盖，`response` 包含阈值和按入量排列的 `pieces`。每一项以 `start`、`stop` 给出半开区间，告警用 `alarms` 给出，出量由 `slope * entry + intercept` 表示。斜率为 0 或 1，区间紧密覆盖 `[0,H)`，告警位于声明覆盖内。`detector.response.evaluate_response` 可用任意合法精确入量独立核对一个固定班段。报告领取直接读取已归档快照和回执。
+
+## 跨班衔接约定
+
+固定件是「入量 → 原拍告警与出量」的完整精确函数，不是只对入量 0 成立的一条记录。班段内每拍加偏差、负值归零、达到或超过 `H` 时按该原拍告警并清零；这些转折点以精确有理数切成 `pieces`，因此任意 `0 <= s < H` 的入量都能由 `evaluate_response` 独立复算，且同一固定录制的等价切段得到相同结果。签发整卷时只从零开场，第 1 段按入量 0 求值，其后每段以上一段实际期末量作为入量逐段衔接；换切段既不改告警也不改期末量。逐拍偏差只留在站端，不进交班件。
+
+本次修复的根因是 `detector.response.build_response` 曾把整段折叠成单条 `slope=0` 的记录，丢失了入量依赖；`reports.compose.compose_report` 又对每段固定以入量 0 求值，导致跨班累计量被丢弃。
