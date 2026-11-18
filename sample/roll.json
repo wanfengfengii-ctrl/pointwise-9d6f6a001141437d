@@ -1,0 +1,12 @@
+{
+  "roll_id": "CW-17",
+  "plan_id": "surface",
+  "revision": "r1",
+  "unit": "du",
+  "threshold": [5, 1],
+  "coverage": [1, 3],
+  "shifts": [
+    {"recording_id": "white", "evidence_id": "CW-17-white", "coverage": [1, 1], "ticks": [[1, [4, 1]]]},
+    {"recording_id": "night", "evidence_id": "CW-17-night", "coverage": [2, 3], "ticks": [[3, [-1, 1]], [2, [2, 1]]]}
+  ]
+}
